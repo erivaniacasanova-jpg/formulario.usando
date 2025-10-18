@@ -1,20 +1,33 @@
 import RegistroForm from "@/components/registro-form"
-import type { Representante } from "@/lib/types"
 
-interface PageProps {
-  params: Promise<{
-    representanteId: string
-  }>
+export default async function RepresentantePage({ params }) {
+  const { representanteId } = params
+
+  // Aqui você define manualmente os representantes
+  const representantes = {
+    "134684": {
+      id: "134684",
+      nome: "William Dos Santos Pessoa",
+      whatsapp: "5521969400194",
+    },
+    "135302": {
+    id: "135302",
+    nome: "Antonia Erivania Delmiro Jacinto",
+    whatsapp: "558498410187",
+  },
+  "153542": {
+    id: "153542",
+    nome: "Aline Aparecida Melo",
+    whatsapp: "553193371195",
+  },
 }
+  const representante = representantes[representanteId]
 
-export default async function RepresentantePage({ params }: PageProps) {
-  const { representanteId } = await params
-
-  const defaultRepresentante: Representante = {
-    id: representanteId,
-    nome: "Francisco Eliedisom Dos Santos",
-    whatsapp: "558481321396",
+  // Caso o ID não exista
+  if (!representante) {
+    return <p>Representante não encontrado.</p>
   }
 
-  return <RegistroForm representante={defaultRepresentante} />
+  // Exibe o mesmo formulário, só com dados diferentes
+  return <RegistroForm representante={representante} />
 }
