@@ -272,12 +272,16 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              nome: formData.name,
-              whatsapp: formData.cell,
-              tipoChip: formData.typeChip,
-              formaEnvio: formData.typeFrete,
-              plano: planoEscolhido,
-            }),
+  nome: formData.name,
+  whatsapp: formData.cell,
+  tipoChip: formData.typeChip,
+  formaEnvio: formData.typeFrete,
+  plano: (() => {
+    const p = plans.find(p => String(p.id) === String(formData.plan_id));
+    return p
+      ? `${p.operator} - ${p.name} - R$ ${p.price}/mês`
+      : "Plano não identificado";
+  })(),
           })
         } catch (webhookError) {
           console.error("[v0] Webhook error:", webhookError)
