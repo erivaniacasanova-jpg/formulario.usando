@@ -13,7 +13,7 @@ export default async function RepresentantePage({ params }) {
     "135302": {
     id: "135302",
     nome: "Antonia Erivania Delmiro Jacinto",
-    whatsapp: "https://webhook.fiqon.app/webhook/a0265c1b-d832-483e-af57-8096334a57a8/e167dea4-079e-4af4-9b3f-4acaf711f432",
+    whatsapp: "558498410187",
   },
   "153542": {
     id: "153542",
