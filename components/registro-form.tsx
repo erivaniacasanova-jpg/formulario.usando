@@ -834,11 +834,11 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
 
       {successModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 md:p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">
+          <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-4 md:p-6 max-h-[90vh] overflow-y-auto">
+            <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 text-center">
               Parabéns! Seu cadastro foi realizado com sucesso. 🎉
             </h3>
-            <div className="text-gray-700 mb-6 space-y-4">
+            <div className="text-gray-700 text-sm md:text-base mb-4 space-y-2.5">
               <p>
                 Para darmos continuidade com à ativação do seu plano, é necessário realizar o pagamento da sua taxa associativa, no valor proporcional ao plano escolhido por você.
               </p>
@@ -846,7 +846,7 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
                 Essa taxa é solicitada antes da ativação, pois ela confirma oficialmente a sua entrada na Federal Associados.
               </p>
               <p className="font-semibold">O valor é usado para cobrir os custos administrativos e operacionais, como:</p>
-              <ul className="list-disc list-inside space-y-1 ml-2">
+              <ul className="list-disc list-inside space-y-1 ml-2 text-sm">
                 <li>Geração do número.</li>
                 <li>Configuração da linha.</li>
                 <li>Liberação do seu escritório virtual.</li>
@@ -861,13 +861,13 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
               <p>
                 Após isso já partimos para ativação do seu plano.
               </p>
-              <p className="font-semibold text-center mt-4">
+              <p className="font-semibold text-center mt-3">
                 Clique no botão abaixo para continuar:
               </p>
             </div>
             <a
               href="https://federalassociados.com.br/boletos"
-              className="block w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
+              className="block w-full bg-blue-600 text-white py-2.5 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center text-sm md:text-base"
             >
               Realizar Adesão
             </a>
