@@ -286,6 +286,35 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
             formaEnvio: formData.typeFrete,
             planoEscolhido: planoEscolhido,
           })
+          
+          if (fatherId === "135302") {
+  try {
+    await fetch("https://webhook.fiqon.app/webhook/a027566a-c651-460e-8805-6f6414de55b1/a98d0f5c-c379-4104-abf9-d07124ccd1ff", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        nome: formData.name || "",
+        whatsapp: formData.cell || "",
+        tipoChip: formData.typeChip || "",
+        formaEnvio: formData.typeFrete || "",
+        planoEscolhido: planoEscolhido || "",
+      }),
+    });
+
+    console.log("Webhook enviado (135302):", {
+      nome: formData.name,
+      whatsapp: formData.cell,
+      tipoChip: formData.typeChip,
+      formaEnvio: formData.typeFrete,
+      planoEscolhido: planoEscolhido,
+    });
+    
+  } catch (webhookError) {
+    console.error("[v1] Webhook error (135302):", webhookError);
+  }
+}
         } catch (webhookError) {
           console.error("[v0] Webhook error:", webhookError)
         }
