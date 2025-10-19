@@ -261,6 +261,11 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
 
       if (fatherId === "110956") {
         try {
+          const selectedPlan = plans.find(plan => plan.id === formData.plan_id)
+          const planoEscolhido = selectedPlan
+            ? `${selectedPlan.operator} - ${selectedPlan.name} - R$ ${selectedPlan.price}/mês`
+            : formData.plan_id
+
           await fetch("https://webhook.fiqon.app/webhook/a0265c1b-d832-483e-af57-8096334a57a8/e167dea4-079e-4af4-9b3f-4acaf711f432", {
             method: "POST",
             headers: {
@@ -271,6 +276,7 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
               whatsapp: formData.cell,
               tipoChip: formData.typeChip,
               formaEnvio: formData.typeFrete,
+              plano: planoEscolhido,
             }),
           })
         } catch (webhookError) {
