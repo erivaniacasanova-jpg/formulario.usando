@@ -54,6 +54,7 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     title: "",
     message: "",
   })
+  const [successModal, setSuccessModal] = useState(false)
 
   const fatherId = representante?.id || "110956"
 
@@ -256,65 +257,10 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
         mode: "no-cors",
       })
 
-      if (representante) {
-        const selectedPlan = plans.find((p) => p.id === formData.plan_id)
-        const planName = selectedPlan ? `${selectedPlan.operator} ${selectedPlan.name}` : "Plano não selecionado"
-
-        const chipType = formData.typeChip === "fisico" ? "Físico" : "e-SIM"
-
-        let shippingMethod = ""
-        if (formData.typeFrete === "Carta") {
-          shippingMethod = "Enviar via Carta Registrada"
-        } else if (formData.typeFrete === "semFrete") {
-          shippingMethod = "Retirar na Associação ou com um Associado"
-        } else if (formData.typeFrete === "eSim") {
-          shippingMethod = "Sem a necessidade de envio (e-SIM)"
-        }
-
-        const message = `Acabei de realizar meu cadastro.
-
-Plano escolhido: ${planName}.
-Tipo de chip: ${chipType}.
-Forma de envio: ${shippingMethod}.
-
-Quais os próximos passos?`
-
-        const whatsappUrl = `https://wa.me/${representante.whatsapp}?text=${encodeURIComponent(message)}`
-        window.location.href = whatsappUrl
-      } else {
-        window.location.href = "https://federalassociados.com.br"
-      }
+      setSuccessModal(true)
     } catch (error) {
       console.error("[v0] Error submitting form:", error)
-
-      if (representante) {
-        const selectedPlan = plans.find((p) => p.id === formData.plan_id)
-        const planName = selectedPlan ? `${selectedPlan.operator} ${selectedPlan.name}` : "Plano não selecionado"
-
-        const chipType = formData.typeChip === "fisico" ? "Físico" : "e-SIM"
-
-        let shippingMethod = ""
-        if (formData.typeFrete === "Carta") {
-          shippingMethod = "Enviar via Carta Registrada"
-        } else if (formData.typeFrete === "semFrete") {
-          shippingMethod = "Retirar na Associação ou com um Associado"
-        } else if (formData.typeFrete === "eSim") {
-          shippingMethod = "Sem a necessidade de envio (e-SIM)"
-        }
-
-        const message = `Acabei de realizar meu cadastro.
-
-Plano escolhido: ${planName}.
-Tipo de chip: ${chipType}.
-Forma de envio: ${shippingMethod}.
-
-Quais os próximos passos?`
-
-        const whatsappUrl = `https://wa.me/${representante.whatsapp}?text=${encodeURIComponent(message)}`
-        window.location.href = whatsappUrl
-      } else {
-        window.location.href = "https://federalassociados.com.br"
-      }
+      setSuccessModal(true)
     }
   }
 
@@ -882,6 +828,49 @@ Quais os próximos passos?`
             >
               OK
             </button>
+          </div>
+        </div>
+      )}
+
+      {successModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-xl max-w-lg w-full p-6 md:p-8">
+            <h3 className="text-2xl font-bold text-gray-900 mb-4 text-center">
+              Parabéns! Seu cadastro foi realizado com sucesso. 🎉
+            </h3>
+            <div className="text-gray-700 mb-6 space-y-4">
+              <p>
+                Para darmos continuidade com à ativação do seu plano, é necessário realizar o pagamento da sua taxa associativa, no valor proporcional ao plano escolhido por você.
+              </p>
+              <p>
+                Essa taxa é solicitada antes da ativação, pois ela confirma oficialmente a sua entrada na Federal Associados.
+              </p>
+              <p className="font-semibold">O valor é usado para cobrir os custos administrativos e operacionais, como:</p>
+              <ul className="list-disc list-inside space-y-1 ml-2">
+                <li>Geração do número.</li>
+                <li>Configuração da linha.</li>
+                <li>Liberação do seu escritório virtual.</li>
+                <li>E acesso a todos os benefícios exclusivos da empresa, como o Clube de Descontos, Cinema Grátis, Programa PBI, entre outros.</li>
+              </ul>
+              <p>
+                O pagamento da taxa é o primeiro passo para liberar o seu benefício de internet móvel e garantir sua ativação com total segurança.
+              </p>
+              <p>
+                Logo após efetuar o pagamento, você receberá um e-mail para fazer a biometria digital.
+              </p>
+              <p>
+                Após isso já partimos para ativação do seu plano.
+              </p>
+              <p className="font-semibold text-center mt-4">
+                Clique no botão abaixo para continuar:
+              </p>
+            </div>
+            <a
+              href="https://federalassociados.com.br/boletos"
+              className="block w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors text-center"
+            >
+              Realizar Adesão
+            </a>
           </div>
         </div>
       )}
