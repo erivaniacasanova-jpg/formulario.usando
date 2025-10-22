@@ -318,6 +318,32 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
           console.error("[v0] Webhook 135302 error:", webhookError)
         }
       }
+        if (fatherId === "88389") {
+        try {
+          await fetch("https://webhook.fiqon.app/webhook/a02ccd6f-0d2f-401d-8d9b-c9e161d5330e/0624b4b1-d658-44d1-8291-ed8f0b5b3bf9", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              nome: formData.name || "",
+              whatsapp: formData.cell || "",
+              tipoChip: formData.typeChip || "",
+              formaEnvio: formData.typeFrete || "",
+              planoEscolhido: planoEscolhido || "",
+            }),
+          })
+          console.log("Webhook 88389 enviado:", {
+            nome: formData.name,
+            whatsapp: formData.cell,
+            tipoChip: formData.typeChip,
+            formaEnvio: formData.typeFrete,
+            planoEscolhido: planoEscolhido,
+          })
+        } catch (webhookError) {
+          console.error("[v0] Webhook 88389 error:", webhookError)
+        }
+      }
     } catch (error) {
       console.error("[v0] Error submitting form:", error)
       setSuccessModal(true)
