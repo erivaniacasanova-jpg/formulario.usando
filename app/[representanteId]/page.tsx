@@ -25,6 +25,11 @@ export default async function RepresentantePage({ params }) {
     nome: "Wagner Cruz Vieira",
     whatsapp: "5521996098857",
   },
+     "108054": {
+    id: "108054",
+    nome: "Layanna Kristina Chagas Araujo Faustino",
+    whatsapp: "5563992182456",
+  },
 }
   const representante = representantes[representanteId]
 
