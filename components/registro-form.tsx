@@ -3,7 +3,6 @@
 import type React from "react"
 import { useState } from "react"
 import type { FormData, Representante } from "@/lib/types"
-import { checkCpfExists, insertRegistro } from "@/lib/supabase"
 
 interface RegistroFormProps {
   representante?: Representante | null
@@ -96,6 +95,14 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     setAlertModal({ show: true, title, message })
   }
 
+  const errorSwal = (title: string, message?: string | null) => {
+    setAlertModal({
+      show: true,
+      title: title || "Ops!",
+      message: message || "Erro ao processar solicitação"
+    })
+  }
+
   const handleCepBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
     const cep = e.target.value.replace(/[^0-9]/g, "")
     if (!cep || cep.length < 8) return
@@ -147,28 +154,56 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     const cpfSearch = formData.cpf.replace(/[^0-9]/g, "")
     if (cpfSearch.length !== 11) return
 
-    try {
-      const cpfJaCadastrado = await checkCpfExists(cpfSearch)
+    const birth = selectedDate.split("-")
+    const birthFormatted = birth[2] + "-" + birth[1] + "-" + birth[0]
+    const access_token = "2|VL3z6OcyARWRoaEniPyoHJpPtxWcD99NN2oueGGn4acc0395"
+    const url = `https://apicpf.whatsgps.com.br/api/cpf/search?numeroDeCpf=${cpfSearch}&dataNascimento=${birthFormatted}&token=${access_token}`
 
-      if (cpfJaCadastrado) {
-        setCpfDuplicado(true)
+    try {
+      const response = await fetch(url, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json; charset=utf-8",
+          Accept: "application/json",
+        },
+      })
+      const res = await response.json()
+
+      if (!res.data || !res.data.id) {
+        errorSwal("Error!", "CPF não encontrado!")
+        setCpfDuplicado(false)
         setFieldValidation((prev) => ({
           ...prev,
           cpf: "invalid",
           birth: "invalid",
         }))
-        showAlert("error", "Ops!", "CPF já cadastrado no sistema! Não é possível cadastrar novamente.")
         return
       }
 
-      setCpfDuplicado(false)
-      setFieldValidation((prev) => ({
-        ...prev,
-        cpf: "valid",
-        birth: "valid",
-      }))
+      if (res.data && res.data.id) {
+        setFormData((prev) => ({
+          ...prev,
+          name: res.data.nome_da_pf || "",
+          cpf: res.data.numero_de_cpf || cpfSearch,
+        }))
+
+        setIsReadOnly({
+          cpf: true,
+          birth: true,
+          name: true,
+        })
+
+        setCpfDuplicado(false)
+        setFieldValidation((prev) => ({
+          ...prev,
+          cpf: "valid",
+          birth: "valid",
+          name: "valid",
+        }))
+      }
     } catch (error) {
       console.error("[v0] Error validating CPF:", error)
+      showAlert("error", "Ops!", "Erro ao validar CPF!")
     }
   }
 
@@ -260,27 +295,6 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     const formDataToSend = new FormData(form)
 
     try {
-      await insertRegistro({
-        cpf: formData.cpf,
-        birth: formData.birth,
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        cell: formData.cell,
-        cep: formData.cep,
-        district: formData.district,
-        city: formData.city,
-        state: formData.state,
-        street: formData.street,
-        number: formData.number,
-        complement: formData.complement,
-        type_chip: formData.typeChip,
-        plan_id: formData.plan_id,
-        type_frete: formData.typeFrete,
-        father_id: fatherId,
-        status: "0",
-      })
-
       await fetch("https://federalassociados.com.br/registroSave", {
         method: "POST",
         body: formDataToSend,
