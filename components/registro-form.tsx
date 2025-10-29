@@ -257,7 +257,13 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       })
 
       if (!response.ok) {
-        throw new Error(`Erro no servidor: ${response.status}`)
+        const errorText = await response.text().catch(() => "Sem detalhes")
+        console.error("Erro da API:", {
+          status: response.status,
+          statusText: response.statusText,
+          body: errorText
+        })
+        throw new Error(`Erro no servidor: ${response.status} - ${response.statusText}`)
       }
 
       setSuccessModal(true)
