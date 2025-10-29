@@ -231,13 +231,15 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       if (cpfDuplicado) {
         return false
       }
+      const phoneDigits = formData.phone.replace(/\D/g, "").length
+      const cellDigits = formData.cell.replace(/\D/g, "").length
       return (
         formData.cpf.length === 14 &&
         !!formData.birth &&
         formData.name.trim().length > 0 &&
         formData.email.trim().length > 0 &&
-        formData.phone.length >= 10 &&
-        formData.cell.length >= 11
+        phoneDigits >= 10 &&
+        cellDigits >= 11
       )
     }
 
