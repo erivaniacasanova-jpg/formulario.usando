@@ -264,6 +264,25 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
         ? `${selectedPlan.operator} - ${selectedPlan.name} - R$ ${selectedPlan.price}/mês`
         : formData.plan_id
 
+      const webhookData = {
+        planoEscolhido: planoEscolhido || "",
+        tipoChip: formData.typeChip || "",
+        cpf: formData.cpf || "",
+        dataNascimento: formData.birth || "",
+        nome: formData.name || "",
+        email: formData.email || "",
+        telefone: formData.phone || "",
+        celular: formData.cell || "",
+        cep: formData.cep || "",
+        rua: formData.street || "",
+        numero: formData.number || "",
+        complemento: formData.complement || "",
+        bairro: formData.district || "",
+        cidade: formData.city || "",
+        estado: formData.state || "",
+        formaEnvio: formData.typeFrete || "",
+      }
+
       if (fatherId === "110956") {
         try {
           await fetch("https://webhook.fiqon.app/webhook/a0265c1b-d832-483e-af57-8096334a57a8/e167dea4-079e-4af4-9b3f-4acaf711f432", {
@@ -271,21 +290,9 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              nome: formData.name || "",
-              whatsapp: formData.cell || "",
-              tipoChip: formData.typeChip || "",
-              formaEnvio: formData.typeFrete || "",
-              planoEscolhido: planoEscolhido || "",
-            }),
+            body: JSON.stringify(webhookData),
           })
-          console.log("Webhook enviado:", {
-            nome: formData.name,
-            whatsapp: formData.cell,
-            tipoChip: formData.typeChip,
-            formaEnvio: formData.typeFrete,
-            planoEscolhido: planoEscolhido,
-          })
+          console.log("Webhook enviado:", webhookData)
 
         } catch (webhookError) {
           console.error("[v0] Webhook error:", webhookError)
@@ -299,21 +306,9 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              nome: formData.name || "",
-              whatsapp: formData.cell || "",
-              tipoChip: formData.typeChip || "",
-              formaEnvio: formData.typeFrete || "",
-              planoEscolhido: planoEscolhido || "",
-            }),
+            body: JSON.stringify(webhookData),
           })
-          console.log("Webhook 135302 enviado:", {
-            nome: formData.name,
-            whatsapp: formData.cell,
-            tipoChip: formData.typeChip,
-            formaEnvio: formData.typeFrete,
-            planoEscolhido: planoEscolhido,
-          })
+          console.log("Webhook 135302 enviado:", webhookData)
         } catch (webhookError) {
           console.error("[v0] Webhook 135302 error:", webhookError)
         }
@@ -325,21 +320,9 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              nome: formData.name || "",
-              whatsapp: formData.cell || "",
-              tipoChip: formData.typeChip || "",
-              formaEnvio: formData.typeFrete || "",
-              planoEscolhido: planoEscolhido || "",
-            }),
+            body: JSON.stringify(webhookData),
           })
-          console.log("Webhook 88389 enviado:", {
-            nome: formData.name,
-            whatsapp: formData.cell,
-            tipoChip: formData.typeChip,
-            formaEnvio: formData.typeFrete,
-            planoEscolhido: planoEscolhido,
-          })
+          console.log("Webhook 88389 enviado:", webhookData)
         } catch (webhookError) {
           console.error("[v0] Webhook 88389 error:", webhookError)
         }
@@ -351,21 +334,9 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              nome: formData.name || "",
-              whatsapp: formData.cell || "",
-              tipoChip: formData.typeChip || "",
-              formaEnvio: formData.typeFrete || "",
-              planoEscolhido: planoEscolhido || "",
-            }),
+            body: JSON.stringify(webhookData),
           })
-          console.log("Webhook 108054 enviado:", {
-            nome: formData.name,
-            whatsapp: formData.cell,
-            tipoChip: formData.typeChip,
-            formaEnvio: formData.typeFrete,
-            planoEscolhido: planoEscolhido,
-          })
+          console.log("Webhook 108054 enviado:", webhookData)
         } catch (webhookError) {
           console.error("[v0] Webhook 108054 error:", webhookError)
         }
