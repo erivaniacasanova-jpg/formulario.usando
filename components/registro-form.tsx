@@ -266,7 +266,20 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       return
     }
     if (!validateStep(currentStep)) {
-      showAlert("error", "Atenção!", "Por favor, preencha todos os campos obrigatórios antes de continuar.")
+      if (currentStep === 2) {
+        const phoneDigits = formData.phone.replace(/\D/g, "").length
+        const cellDigits = formData.cell.replace(/\D/g, "").length
+        let errorMsg = "Campos faltando:\n"
+        if (formData.cpf.length !== 14) errorMsg += `- CPF (atual: ${formData.cpf.length} caracteres)\n`
+        if (!formData.birth) errorMsg += "- Data de nascimento\n"
+        if (formData.name.trim().length === 0) errorMsg += "- Nome completo\n"
+        if (formData.email.trim().length === 0) errorMsg += "- Email\n"
+        if (phoneDigits < 10) errorMsg += `- Telefone (dígitos: ${phoneDigits}, precisa: 10)\n`
+        if (cellDigits < 11) errorMsg += `- Celular (dígitos: ${cellDigits}, precisa: 11)\n`
+        showAlert("error", "Atenção!", errorMsg)
+      } else {
+        showAlert("error", "Atenção!", "Por favor, preencha todos os campos obrigatórios antes de continuar.")
+      }
       return
     }
     setCurrentStep((prev) => Math.min(prev + 1, 4))
