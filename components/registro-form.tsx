@@ -254,8 +254,11 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       const response = await fetch("https://federalassociados.com.br/registroSave", {
         method: "POST",
         body: formDataToSend,
-        mode: "no-cors",
       })
+
+      if (!response.ok) {
+        throw new Error(`Erro no servidor: ${response.status}`)
+      }
 
       setSuccessModal(true)
 
@@ -372,7 +375,9 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       }
     } catch (error) {
       console.error("[v0] Error submitting form:", error)
-      setSuccessModal(true)
+      showAlert("error", "Erro ao enviar cadastro", "Não foi possível enviar o cadastro. Por favor, tente novamente.")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
