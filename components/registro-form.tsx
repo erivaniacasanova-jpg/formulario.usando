@@ -55,6 +55,7 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     message: "",
   })
   const [successModal, setSuccessModal] = useState(false)
+  const [cpfDuplicado, setCpfDuplicado] = useState(false)
 
   const fatherId = representante?.id || "110956"
 
@@ -161,10 +162,17 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       const res = await response.json()
 
       if (res.data && res.data.id) {
+        setCpfDuplicado(true)
+        setFieldValidation((prev) => ({
+          ...prev,
+          cpf: "invalid",
+          birth: "invalid",
+        }))
         showAlert("error", "Ops!", "CPF já cadastrado no sistema! Não é possível cadastrar novamente.")
         return
       }
 
+      setCpfDuplicado(false)
       setFieldValidation((prev) => ({
         ...prev,
         cpf: "valid",
@@ -196,6 +204,9 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     }
 
     if (step === 2) {
+      if (cpfDuplicado) {
+        return false
+      }
       return (
         formData.cpf.length === 14 &&
         !!formData.birth &&
@@ -224,6 +235,10 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
   }
 
   const nextStep = () => {
+    if (currentStep === 2 && cpfDuplicado) {
+      showAlert("error", "Ops!", "CPF já cadastrado no sistema! Não é possível cadastrar novamente.")
+      return
+    }
     if (!validateStep(currentStep)) {
       showAlert("error", "Atenção!", "Por favor, preencha todos os campos obrigatórios antes de continuar.")
       return
@@ -239,6 +254,11 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+
+    if (cpfDuplicado) {
+      showAlert("error", "Ops!", "CPF já cadastrado no sistema! Não é possível cadastrar novamente.")
+      return
+    }
 
     if (!validateStep(4)) {
       alert("Por favor, selecione uma forma de envio antes de salvar.")
@@ -620,6 +640,13 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
                     </div>
                   </div>
 
+                  {cpfDuplicado && (
+                    <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-3 rounded mb-3">
+                      <p className="font-bold text-sm md:text-base">CPF já cadastrado no sistema!</p>
+                      <p className="text-xs md:text-sm">Não é possível continuar com este CPF. Por favor, verifique os dados.</p>
+                    </div>
+                  )}
+
                   <div className="flex gap-2 md:gap-3 mt-3 md:mt-4">
                     <button
                       type="button"
@@ -631,7 +658,8 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
                     <button
                       type="button"
                       onClick={nextStep}
-                      className="flex-1 bg-blue-600 text-white py-2 md:py-3 text-sm md:text-base rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                      disabled={cpfDuplicado}
+                      className="flex-1 bg-blue-600 text-white py-2 md:py-3 text-sm md:text-base rounded-lg font-semibold hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Próximo
                     </button>
