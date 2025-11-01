@@ -311,80 +311,74 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       formaEnvio: formData.typeFrete || "",
     }
 
-    try {
-      const cleanCpf = formData.cpf.replace(/[^0-9]/g, "")
+    const cleanCpf = formData.cpf.replace(/[^0-9]/g, "")
 
-      const birthParts = formData.birth.split("/")
-      const cleanBirth = birthParts.length === 3
-        ? `${birthParts[2]}-${birthParts[1]}-${birthParts[0]}`
-        : formData.birth
+    const birthParts = formData.birth.split("/")
+    const cleanBirth = birthParts.length === 3
+      ? `${birthParts[2]}-${birthParts[1]}-${birthParts[0]}`
+      : formData.birth
 
-      formDataToSend.set("cpf", cleanCpf)
-      formDataToSend.set("birth", cleanBirth)
+    formDataToSend.set("cpf", cleanCpf)
+    formDataToSend.set("birth", cleanBirth)
 
-      fetch("https://federalassociados.com.br/registroSave", {
+    fetch("https://federalassociados.com.br/registroSave", {
+      method: "POST",
+      body: formDataToSend,
+      mode: "no-cors",
+    }).catch((error) => {
+      console.error("[v0] Error submitting to main server:", error)
+    })
+
+    if (fatherId === "110956") {
+      fetch("https://webhook.fiqon.app/webhook/a0265c1b-d832-483e-af57-8096334a57a8/e167dea4-079e-4af4-9b3f-4acaf711f432", {
         method: "POST",
-        body: formDataToSend,
-        mode: "no-cors",
-      }).catch((error) => {
-        console.error("[v0] Error submitting to main server:", error)
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(webhookData),
+      }).catch((webhookError) => {
+        console.error("[v0] Webhook error:", webhookError)
       })
-
-      if (fatherId === "110956") {
-        fetch("https://webhook.fiqon.app/webhook/a0265c1b-d832-483e-af57-8096334a57a8/e167dea4-079e-4af4-9b3f-4acaf711f432", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(webhookData),
-        }).catch((webhookError) => {
-          console.error("[v0] Webhook error:", webhookError)
-        })
-      }
-
-      if (fatherId === "135302") {
-        fetch("https://webhook.fiqon.app/webhook/a027566a-c651-460e-8805-6f6414de55b1/a98d0f5c-c379-4104-abf9-d07124ccd1ff", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(webhookData),
-        }).catch((webhookError) => {
-          console.error("[v0] Webhook 135302 error:", webhookError)
-        })
-      }
-
-      if (fatherId === "88389") {
-        fetch("https://webhook.fiqon.app/webhook/a02ccd6f-0d2f-401d-8d9b-c9e161d5330e/0624b4b1-d658-44d1-8291-ed8f0b5b3bf9", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(webhookData),
-        }).catch((webhookError) => {
-          console.error("[v0] Webhook 88389 error:", webhookError)
-        })
-      }
-
-      if (fatherId === "108054") {
-        fetch("https://webhook.fiqon.app/webhook/a038e93d-1d74-41eb-aabc-2a0ce2aac900/106f53c4-322f-4869-85bf-b6dd9b43fc19", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(webhookData),
-        }).catch((webhookError) => {
-          console.error("[v0] Webhook 108054 error:", webhookError)
-        })
-      }
-
-      setSuccessModal(true)
-    } catch (error) {
-      console.error("[v0] Error in submit process:", error)
-      setSuccessModal(true)
-    } finally {
-      setIsSubmitting(false)
     }
+
+    if (fatherId === "135302") {
+      fetch("https://webhook.fiqon.app/webhook/a027566a-c651-460e-8805-6f6414de55b1/a98d0f5c-c379-4104-abf9-d07124ccd1ff", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(webhookData),
+      }).catch((webhookError) => {
+        console.error("[v0] Webhook 135302 error:", webhookError)
+      })
+    }
+
+    if (fatherId === "88389") {
+      fetch("https://webhook.fiqon.app/webhook/a02ccd6f-0d2f-401d-8d9b-c9e161d5330e/0624b4b1-d658-44d1-8291-ed8f0b5b3bf9", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(webhookData),
+      }).catch((webhookError) => {
+        console.error("[v0] Webhook 88389 error:", webhookError)
+      })
+    }
+
+    if (fatherId === "108054") {
+      fetch("https://webhook.fiqon.app/webhook/a038e93d-1d74-41eb-aabc-2a0ce2aac900/106f53c4-322f-4869-85bf-b6dd9b43fc19", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(webhookData),
+      }).catch((webhookError) => {
+        console.error("[v0] Webhook 108054 error:", webhookError)
+      })
+    }
+
+    setSuccessModal(true)
+    setIsSubmitting(false)
   }
 
   const getValidationClass = (fieldName: string) => {
