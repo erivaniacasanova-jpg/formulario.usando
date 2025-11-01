@@ -166,15 +166,16 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     }
   }
 
-  const handleBirthBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
-    const maskedDate = e.target.value
-    if (!maskedDate || !formData.cpf) return
+  const handleBirthBlur = () => {
+    // Validation removed - will be checked on form submission only
+  }
 
-    const cpfSearch = formData.cpf.replace(/[^0-9]/g, "")
-    if (cpfSearch.length !== 11) return
+  const validateCpfOnSubmit = async (cpfValue: string, birthValue: string): Promise<boolean> => {
+    const cpfSearch = cpfValue.replace(/[^0-9]/g, "")
+    if (cpfSearch.length !== 11) return false
 
-    const digits = maskedDate.replace(/\D/g, "")
-    if (digits.length !== 8) return
+    const digits = birthValue.replace(/\D/g, "")
+    if (digits.length !== 8) return false
 
     const day = digits.substring(0, 2)
     const month = digits.substring(2, 4)
@@ -194,14 +195,7 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       const res = await response.json()
 
       if (!res.data || !res.data.id) {
-        errorSwal("Error!", "CPF não encontrado!")
-        setCpfDuplicado(false)
-        setFieldValidation((prev) => ({
-          ...prev,
-          cpf: "invalid",
-          birth: "invalid",
-        }))
-        return
+        return false
       }
 
       if (res.data && res.data.id) {
@@ -218,16 +212,12 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
         })
 
         setCpfDuplicado(false)
-        setFieldValidation((prev) => ({
-          ...prev,
-          cpf: "valid",
-          birth: "valid",
-          name: "valid",
-        }))
+        return true
       }
+      return false
     } catch (error) {
       console.error("[v0] Error validating CPF:", error)
-      showAlert("error", "Ops!", "Erro ao validar CPF!")
+      return false
     }
   }
 
@@ -313,6 +303,13 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     }
 
     setIsSubmitting(true)
+
+    const cpfIsValid = await validateCpfOnSubmit(formData.cpf, formData.birth)
+    if (!cpfIsValid) {
+      setIsSubmitting(false)
+      showAlert("error", "Erro!", "CPF ou Data de Nascimento inválidos. Verifique os dados e tente novamente.")
+      return
+    }
 
     const form = e.currentTarget
     const formDataToSend = new FormData(form)
