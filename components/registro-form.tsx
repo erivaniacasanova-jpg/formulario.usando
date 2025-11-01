@@ -91,6 +91,25 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       .replace(/(-\d{3})\d+?$/, "$1")
   }
 
+  const maskBirth = (value: string) => {
+    return value
+      .replace(/\D/g, "")
+      .replace(/(\d{2})(\d)/, "$1/$2")
+      .replace(/(\d{2})(\d)/, "$1/$2")
+      .replace(/(\d{4})\d+?$/, "$1")
+  }
+
+  const convertBirthToAPIFormat = (maskedValue: string) => {
+    const digits = maskedValue.replace(/\D/g, "")
+    if (digits.length === 8) {
+      const day = digits.substring(0, 2)
+      const month = digits.substring(2, 4)
+      const year = digits.substring(4, 8)
+      return `${year}-${month}-${day}`
+    }
+    return ""
+  }
+
   const showAlert = (type: "success" | "error" | "loading", title: string, message: string) => {
     setAlertModal({ show: true, title, message })
   }
@@ -148,14 +167,19 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
   }
 
   const handleBirthBlur = async (e: React.FocusEvent<HTMLInputElement>) => {
-    const selectedDate = e.target.value
-    if (!selectedDate || !formData.cpf) return
+    const maskedDate = e.target.value
+    if (!maskedDate || !formData.cpf) return
 
     const cpfSearch = formData.cpf.replace(/[^0-9]/g, "")
     if (cpfSearch.length !== 11) return
 
-    const birth = selectedDate.split("-")
-    const birthFormatted = birth[2] + "-" + birth[1] + "-" + birth[0]
+    const digits = maskedDate.replace(/\D/g, "")
+    if (digits.length !== 8) return
+
+    const day = digits.substring(0, 2)
+    const month = digits.substring(2, 4)
+    const year = digits.substring(4, 8)
+    const birthFormatted = `${day}-${month}-${year}`
     const access_token = "2|VL3z6OcyARWRoaEniPyoHJpPtxWcD99NN2oueGGn4acc0395"
     const url = `https://apicpf.whatsgps.com.br/api/cpf/search?numeroDeCpf=${cpfSearch}&dataNascimento=${birthFormatted}&token=${access_token}`
 
@@ -233,9 +257,10 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       }
       const phoneDigits = formData.phone.replace(/\D/g, "").length
       const cellDigits = formData.cell.replace(/\D/g, "").length
+      const birthDigits = formData.birth.replace(/\D/g, "").length
       return (
         formData.cpf.length === 14 &&
-        !!formData.birth &&
+        birthDigits === 8 &&
         formData.name.trim().length > 0 &&
         formData.email.trim().length > 0 &&
         phoneDigits >= 10 &&
@@ -310,7 +335,7 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
         planoEscolhido: planoEscolhido || "",
         tipoChip: formData.typeChip || "",
         cpf: formData.cpf || "",
-        dataNascimento: formData.birth || "",
+        dataNascimento: convertBirthToAPIFormat(formData.birth) || "",
         nome: formData.name || "",
         email: formData.email || "",
         telefone: formData.phone || "",
@@ -452,7 +477,7 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
               <input type="hidden" name="father" value={fatherId} />
               <input type="hidden" name="type" value="Recorrente" />
               <input type="hidden" name="cpf" value={formData.cpf} />
-              <input type="hidden" name="birth" value={formData.birth} />
+              <input type="hidden" name="birth" value={convertBirthToAPIFormat(formData.birth)} />
               <input type="hidden" name="name" value={formData.name} />
               <input type="hidden" name="email" value={formData.email} />
               <input type="hidden" name="phone" value={formData.phone} />
@@ -591,14 +616,16 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
                         Data de nascimento <span className="text-red-600">*</span>
                       </label>
                       <input
-                        type="date"
+                        type="text"
                         value={formData.birth}
                         id="birth"
+                        placeholder="DD/MM/AAAA"
                         className={`w-full px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 ${getValidationClass("birth")}`}
                         required
                         readOnly={isReadOnly.birth}
-                        onChange={(e) => setFormData((prev) => ({ ...prev, birth: e.target.value }))}
+                        onChange={(e) => setFormData((prev) => ({ ...prev, birth: maskBirth(e.target.value) }))}
                         onBlur={handleBirthBlur}
+                        maxLength={10}
                       />
                     </div>
                   </div>
