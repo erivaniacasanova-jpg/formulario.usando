@@ -287,99 +287,90 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     const form = e.currentTarget
     const formDataToSend = new FormData(form)
 
+    const selectedPlan = plans.find(plan => plan.id === formData.plan_id)
+    const planoEscolhido = selectedPlan
+      ? `${selectedPlan.operator} - ${selectedPlan.name} - R$ ${selectedPlan.price}/mês`
+      : formData.plan_id
+
+    const webhookData = {
+      planoEscolhido: planoEscolhido || "",
+      tipoChip: formData.typeChip || "",
+      cpf: formData.cpf || "",
+      dataNascimento: formData.birth || "",
+      nome: formData.name || "",
+      email: formData.email || "",
+      telefone: formData.phone || "",
+      celular: formData.cell || "",
+      cep: formData.cep || "",
+      rua: formData.street || "",
+      numero: formData.number || "",
+      complemento: formData.complement || "",
+      bairro: formData.district || "",
+      cidade: formData.city || "",
+      estado: formData.state || "",
+      formaEnvio: formData.typeFrete || "",
+    }
+
     try {
-      await fetch("https://federalassociados.com.br/registroSave", {
+      fetch("https://federalassociados.com.br/registroSave", {
         method: "POST",
         body: formDataToSend,
         mode: "no-cors",
+      }).catch((error) => {
+        console.error("[v0] Error submitting to main server:", error)
       })
 
-      setSuccessModal(true)
-
-      const selectedPlan = plans.find(plan => plan.id === formData.plan_id)
-      const planoEscolhido = selectedPlan
-        ? `${selectedPlan.operator} - ${selectedPlan.name} - R$ ${selectedPlan.price}/mês`
-        : formData.plan_id
-
-      const webhookData = {
-        planoEscolhido: planoEscolhido || "",
-        tipoChip: formData.typeChip || "",
-        cpf: formData.cpf || "",
-        dataNascimento: formData.birth || "",
-        nome: formData.name || "",
-        email: formData.email || "",
-        telefone: formData.phone || "",
-        celular: formData.cell || "",
-        cep: formData.cep || "",
-        rua: formData.street || "",
-        numero: formData.number || "",
-        complemento: formData.complement || "",
-        bairro: formData.district || "",
-        cidade: formData.city || "",
-        estado: formData.state || "",
-        formaEnvio: formData.typeFrete || "",
-      }
-
       if (fatherId === "110956") {
-        try {
-          await fetch("https://webhook.fiqon.app/webhook/a0265c1b-d832-483e-af57-8096334a57a8/e167dea4-079e-4af4-9b3f-4acaf711f432", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(webhookData),
-          })
-          console.log("Webhook enviado:", webhookData)
-
-        } catch (webhookError) {
+        fetch("https://webhook.fiqon.app/webhook/a0265c1b-d832-483e-af57-8096334a57a8/e167dea4-079e-4af4-9b3f-4acaf711f432", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(webhookData),
+        }).catch((webhookError) => {
           console.error("[v0] Webhook error:", webhookError)
-        }
+        })
       }
 
       if (fatherId === "135302") {
-        try {
-          await fetch("https://webhook.fiqon.app/webhook/a027566a-c651-460e-8805-6f6414de55b1/a98d0f5c-c379-4104-abf9-d07124ccd1ff", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(webhookData),
-          })
-          console.log("Webhook 135302 enviado:", webhookData)
-        } catch (webhookError) {
+        fetch("https://webhook.fiqon.app/webhook/a027566a-c651-460e-8805-6f6414de55b1/a98d0f5c-c379-4104-abf9-d07124ccd1ff", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(webhookData),
+        }).catch((webhookError) => {
           console.error("[v0] Webhook 135302 error:", webhookError)
-        }
+        })
       }
-        if (fatherId === "88389") {
-        try {
-          await fetch("https://webhook.fiqon.app/webhook/a02ccd6f-0d2f-401d-8d9b-c9e161d5330e/0624b4b1-d658-44d1-8291-ed8f0b5b3bf9", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(webhookData),
-          })
-          console.log("Webhook 88389 enviado:", webhookData)
-        } catch (webhookError) {
+
+      if (fatherId === "88389") {
+        fetch("https://webhook.fiqon.app/webhook/a02ccd6f-0d2f-401d-8d9b-c9e161d5330e/0624b4b1-d658-44d1-8291-ed8f0b5b3bf9", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(webhookData),
+        }).catch((webhookError) => {
           console.error("[v0] Webhook 88389 error:", webhookError)
-        }
+        })
       }
+
       if (fatherId === "108054") {
-        try {
-          await fetch("https://webhook.fiqon.app/webhook/a038e93d-1d74-41eb-aabc-2a0ce2aac900/106f53c4-322f-4869-85bf-b6dd9b43fc19", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(webhookData),
-          })
-          console.log("Webhook 108054 enviado:", webhookData)
-        } catch (webhookError) {
+        fetch("https://webhook.fiqon.app/webhook/a038e93d-1d74-41eb-aabc-2a0ce2aac900/106f53c4-322f-4869-85bf-b6dd9b43fc19", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(webhookData),
+        }).catch((webhookError) => {
           console.error("[v0] Webhook 108054 error:", webhookError)
-        }
+        })
       }
+
+      setSuccessModal(true)
     } catch (error) {
-      console.error("[v0] Error submitting form:", error)
+      console.error("[v0] Error in submit process:", error)
       setSuccessModal(true)
     } finally {
       setIsSubmitting(false)
