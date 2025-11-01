@@ -312,6 +312,16 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     }
 
     try {
+      const cleanCpf = formData.cpf.replace(/[^0-9]/g, "")
+
+      const birthParts = formData.birth.split("/")
+      const cleanBirth = birthParts.length === 3
+        ? `${birthParts[2]}-${birthParts[1]}-${birthParts[0]}`
+        : formData.birth
+
+      formDataToSend.set("cpf", cleanCpf)
+      formDataToSend.set("birth", cleanBirth)
+
       fetch("https://federalassociados.com.br/registroSave", {
         method: "POST",
         body: formDataToSend,
