@@ -182,6 +182,11 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
     const year = digits.substring(4, 8)
     const birthFormatted = `${day}-${month}-${year}`
     const access_token = "2|VL3z6OcyARWRoaEniPyoHJpPtxWcD99NN2oueGGn4acc0395"
+
+    console.log("CPF para validação:", cpfSearch)
+    console.log("Data formatada para API:", birthFormatted)
+    console.log("Data original digitada:", birthValue)
+
     const url = `https://apicpf.whatsgps.com.br/api/cpf/search?numeroDeCpf=${cpfSearch}&dataNascimento=${birthFormatted}&token=${access_token}`
 
     try {
@@ -194,7 +199,10 @@ export default function RegistroForm({ representante }: RegistroFormProps) {
       })
       const res = await response.json()
 
+      console.log("Resposta completa da API de CPF:", res)
+
       if (!res.data || !res.data.id) {
+        console.log("Falha na validação: dados não encontrados ou inválidos")
         return false
       }
 
